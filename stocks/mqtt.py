@@ -53,9 +53,11 @@ class Mqttclient():
     def on_message(self, mqtt_client, userdata, msg):
 
         from .services import StockService
+        from trade.order_matcher import OrderMatcher
 
         stock = json.loads(msg.payload)
-        # print(stock)
+        OrderMatcher.confirm_buy(stock)
+        OrderMatcher.confirm_sell(stock)
         StockService.update_stock_db(stock)
 
     def run(self):

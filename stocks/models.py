@@ -57,3 +57,31 @@ class StockStream(TimeStampMixin):
         indexes = [
             models.Index(fields=['stock_id', 'timestamp']),
         ]
+
+
+class UserStock(TimeStampMixin):
+    user = models.ForeignKey(
+        "users.User", related_name='stocks', on_delete=models.CASCADE)
+
+    stock = models.ForeignKey(
+        Stock, related_name='users_stock', on_delete=models.CASCADE)
+
+    buy_price = models.FloatField()
+
+    total_count = models.FloatField()
+
+
+class PendingOrders(TimeStampMixin):
+    class OrderType(models.IntegerChoices):
+        BUY = 1
+        SELL = 2
+
+    user = models.ForeignKey(
+        "users.User", related_name='pending_stocks', on_delete=models.CASCADE)
+
+    stock = models.ForeignKey(
+        Stock, related_name='users_pending_stock', on_delete=models.CASCADE)
+    order_type = models.IntegerField(choices=OrderType.choices)
+    total = models.IntegerField()
+    upper_bound = models.FloatField()
+    lower_bound = models.FloatField()
