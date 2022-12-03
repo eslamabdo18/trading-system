@@ -1,16 +1,35 @@
-from datetime import datetime
-# from dateutil import parser
+from .models import Stock, StockStream
+from .models import Stock, StockStream
+
+from dateutil import parser
+import pytz
+import time
 
 
 class StockService:
 
     @staticmethod
     def update_stock_db(stock: dict) -> bool:
-        from .models import Stock
-        from dateutil import parser
 
-        stock["timestamp"] = parser.parse(stock["timestamp"])
-        obj, created = Stock.objects.update_or_create(
-            stock_id=stock['stock_id'],
+        # time.sleep(5)
+        timestamp = pytz.utc.localize(parser.parse(stock["timestamp"]))
+        # print(stock["name"], timestamp)
+        stock["timestamp"] = timestamp
+
+        stock_obj, created = Stock.objects.update_or_create(
+            name=stock['name'],
             defaults=stock
+        )
+
+        stream_obj = {"stock": stock_obj, "price": stock["price"],
+                      "availability": stock["availability"], "timestamp": stock["timestamp"]}
+
+        # StockStream.objects.create(
+        #     stock=stock_obj, price=stock["price"], availability=stock["availability"], timestamp=stock["timestamp"])
+        obj, created = StockStream.objects.get_or_create(
+            stock_id=stock_obj.id,
+            price=stock["price"],
+            availability=stock["availability"],
+            timestamp=stock["timestamp"],
+            defaults=stream_obj,
         )

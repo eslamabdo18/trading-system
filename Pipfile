@@ -8,8 +8,14 @@ django = "*"
 djangorestframework = "*"
 paho-mqtt = "*"
 python-dateutil = "*"
+django-shell-plus = "*"
+psycopg2-binary = "*"
+django-extensions = "*"
+ipython = "*"
+django-filter = "*"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
 python_version = "3.10"

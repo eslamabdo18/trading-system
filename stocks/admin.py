@@ -2,9 +2,14 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Stock
+from .models import Stock, StockStream
 
 
 @admin.register(Stock)
-class CustomUserAdmin(admin.ModelAdmin):
+class StockAdmin(admin.ModelAdmin):
     list_display = ('stock_id', 'price', 'name')
+
+
+@admin.register(StockStream)
+class StockStreamAdmin(admin.ModelAdmin):
+    list_display = ('stock', 'price', 'timestamp')

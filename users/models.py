@@ -5,4 +5,4 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    balance = models.FloatField(null=True)
+    balance = models.FloatField(default=0)
