@@ -56,8 +56,11 @@ class Mqttclient():
         from trade.order_matcher import OrderMatcher
 
         stock = json.loads(msg.payload)
-        OrderMatcher.confirm_buy(stock)
-        OrderMatcher.confirm_sell(stock)
+        # 1 means buy opeartion
+        OrderMatcher.confirm_operation(stock, 1)
+        # 2 means sell operation
+        OrderMatcher.confirm_operation(stock, 2)
+        # insert the current stock into db
         StockService.update_stock_db(stock)
 
     def run(self):

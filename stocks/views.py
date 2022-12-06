@@ -42,10 +42,10 @@ class StockViewset(viewsets.ReadOnlyModelViewSet):
         context["query_params"] = self.request.query_params
         context['filter'] = filter_date
         return context
+
     queryset = Stock.objects.all().prefetch_related("stocks_stream")
     serializer_class = StockSerializer
     lookup_field = "stock_id"
-
 
 # class ProductList(generics.ListAPIView):
 #     queryset = Stock.objects.all()

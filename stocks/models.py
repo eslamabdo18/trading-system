@@ -26,8 +26,6 @@ class Stock(TimeStampMixin):
         ]
 
     def highest_price(self, *args, **kwargs):
-        print(kwargs)
-        print(args)
         stream_stocks = self.stocks_stream.filter(
             **kwargs).prefetch_related("stocks_stream")
         return stream_stocks.aggregate(Max('price'))
@@ -41,6 +39,10 @@ class Stock(TimeStampMixin):
         stream_stocks = self.stocks_stream.filter(
             **kwargs).prefetch_related("stocks_stream")
         return stream_stocks.aggregate(Avg('price'))
+
+    def less_stream(self, *args, **kwargs):
+        stream_stocks = self.stocks_stream.filter(**kwargs)[:5]
+        return stream_stocks
 
     def __str__(self):
         return self.name

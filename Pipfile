@@ -13,6 +13,7 @@ psycopg2-binary = "*"
 django-extensions = "*"
 ipython = "*"
 django-filter = "*"
+coverage = "*"
 
 [dev-packages]
 autopep8 = "*"

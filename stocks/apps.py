@@ -7,7 +7,8 @@ class StocksConfig(AppConfig):
     name = 'stocks'
 
     def ready(self):
-        print("22222")
-        from .mqtt import Mqttclient
-        Mqttclient().run()
+        pass
+        # print("22222")
+        # from .mqtt import Mqttclient
+        # Mqttclient().run()
         # mqtt.client.loop_start()
