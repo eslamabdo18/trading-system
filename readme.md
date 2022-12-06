@@ -41,6 +41,10 @@ In this project i created three separates apps one for all the user operations (
 Dockerfile
 Pipfile
 Pipfile.lock
+docker-compose.yml
+manage.py
+readme.md
+
 config
    |-- __init__.py
    |-- asgi.py
@@ -48,9 +52,7 @@ config
    |-- settings.py
    |-- urls.py
    |-- wsgi.py
-docker-compose.yml
-manage.py
-readme.md
+
 stocks
    |-- __init__.py
    |-- admin.py
@@ -63,9 +65,11 @@ stocks
    |-- tests.py
    |-- urls.py
    |-- views.py
+
 trade
    |-- order_matcher.py
    |-- trade_service.py
+
 users
    |-- __init__.py
    |-- admin.py
