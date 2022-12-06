@@ -37,7 +37,8 @@ class TradeService:
         user = get_object_or_404(User, id=user_id)
         stock = get_object_or_404(Stock, stock_id=stock_id)
 
-        user_stocks = user.stocks.filter(id=stock.id)
+        user_stocks = user.stocks.filter(stock_id=stock.id)
+
         if not user_stocks.exists():
             raise Exception(
                 "you dont have this stock to sell it")

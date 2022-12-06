@@ -41,11 +41,13 @@ class Stock(TimeStampMixin):
         return stream_stocks.aggregate(Avg('price'))
 
     def less_stream(self, *args, **kwargs):
-        stream_stocks = self.stocks_stream.filter(**kwargs)[:5]
+        stream_stocks = self.stocks_stream.filter(
+            **kwargs).order_by("-timestamp")[:5]
         return stream_stocks
 
     def less_stock_transtions(self, *args, **kwargs):
-        transactions = self.stock_transtions.filter(**kwargs)[:5]
+        transactions = self.stock_transtions.filter(
+            **kwargs).order_by('-created_at')[:5]
         return transactions
 
     def __str__(self):
@@ -75,6 +77,9 @@ class UserStock(TimeStampMixin):
     buy_price = models.FloatField()
 
     total_count = models.IntegerField()
+
+    class Meta:
+        unique_together = ('user', 'stock',)
 
 
 class PendingOrders(TimeStampMixin):

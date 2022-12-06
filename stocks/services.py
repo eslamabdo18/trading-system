@@ -19,7 +19,7 @@ class StockService:
                 "availability": 46, 
                 "timestamp": "2019-12-15 14:36:33.462393" 
             }
-            description: this function recive stock(message) 
+            description: this function receive stock(message) 
                          from the stram and insert it in the db
         """
 

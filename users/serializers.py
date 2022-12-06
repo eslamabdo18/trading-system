@@ -4,10 +4,12 @@ from stocks.serializers import UserStockSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', "balance", "password"]
+        fields = ['id', 'username', 'email', "balance", "password"]
+        read_only_fields = ('id',)
 
 
 class UserTransactionSerializer(serializers.ModelSerializer):

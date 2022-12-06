@@ -1,26 +1,19 @@
 import json
-import uuid
+import os
 import paho.mqtt.client as mqtt
 # from .services import StockService
 import random
 
 
-MQTT_HOST = "vernemq"
-MQTT_PORT = 1883
-MQTT_TOPIC = "thndr-trading"
+MQTT_HOST = os.getenv("MQTT_HOST", "vernemq")
+MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
+MQTT_TOPIC = os.getenv("MQTT_TOPIC", "thndr-trading")
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 
 
 class SingletonMeta(type):
-    """
-    The Singleton class can be implemented in different ways in Python. Some
-    possible methods include: base class, decorator, metaclass. We will use the
-    metaclass because it is best suited for this purpose.
-    """
 
     __instance = None
-
-    # print(__instance)
 
     def __new__(cls, *args, **kwargs):
         print(cls.__instance)
@@ -32,7 +25,6 @@ class SingletonMeta(type):
 class Mqttclient():
 
     def __init__(self):
-        print("hereeeee")
         self.client = mqtt.Client(client_id)
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message

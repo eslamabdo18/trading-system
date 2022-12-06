@@ -39,7 +39,7 @@ class OrderMatcher:
                 "availability": 46,
                 "timestamp": "2019-12-15 14:36:33.462393"
             }
-            description: this function run every time we recive an message
+            description: this function run every time we receive an message
                          and check if we have any pending order that match the current stock
                          if yes we create order and add the stock to the user stocks
 

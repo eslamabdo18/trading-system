@@ -1,6 +1,7 @@
 ﻿# Trading System
 
 Trading System APIs using Python (Django)
+1.  [APIs Documentation](https://documenter.getpostman.com/view/12162243/2s8YzP35YL)
 
 ## 🧑🏽‍💻 Technologies used
 
@@ -44,7 +45,6 @@ Pipfile.lock
 docker-compose.yml
 manage.py
 readme.md
-
 config
    |-- __init__.py
    |-- asgi.py
@@ -52,7 +52,6 @@ config
    |-- settings.py
    |-- urls.py
    |-- wsgi.py
-
 stocks
    |-- __init__.py
    |-- admin.py
@@ -65,11 +64,9 @@ stocks
    |-- tests.py
    |-- urls.py
    |-- views.py
-
 trade
    |-- order_matcher.py
    |-- trade_service.py
-
 users
    |-- __init__.py
    |-- admin.py
@@ -87,20 +84,20 @@ users
 
 ## 👀 APIs Routes
 
-You can also find the postman collection from [here](https://documenter.getpostman.com/view/12162243/2s8YYEPQvR)
+You can also find the postman collection from [here](https://documenter.getpostman.com/view/12162243/2s8YzP35YL)
 
 ```
 Method  URI Pattern
 ----  -----------
 GET   api/users/
 POST  api/users/
-GET   api/users/<user_id>
-POST  api/users/<user_id>/deposit
-POST  api/users/<user_id>/withdraw
-POST  api/users/<user_id>/buy
-POST  api/users/<user_id>/sell
-GET   api/stocks
-GET   api/stocks/<stock_id>
+GET   api/users/<user_id>/
+POST  api/users/<user_id>/deposit/
+POST  api/users/<user_id>/withdraw/
+POST  api/users/<user_id>/buy/
+POST  api/users/<user_id>/sell/
+GET   api/stocks/
+GET   api/stocks/<stock_id>/
 ```
 
 ## 💡 How to use
@@ -263,3 +260,26 @@ we could also get stock data within a datetime range and in this case we specify
     http://localhost:8000/api/stocks/c5165fef-bb13-4913-b92a-0eef45b3d53e?from_date=2022-12-05 00:00:00&to_date=2022-12-06 00:00:00
 
 > we could filter by any range of dates or by any time in a specific date if i want to get the data in hour from_date will be 2022-12-05 04:00:00 and to_date will be 2022-12-05 05:00:00. if you want to get data between 2 dates without time you have also to specify the time frame to 00:00:00 as mentioned in the url above
+
+you could find the others APIs in the postman collection
+
+
+## 🗒  Appendix
+In this project I used django (python) to consume ``VerneMQ`` topic, I used ``Phao`` client to connect to this topic and consume it. Each message I receive from the topic I insert it to ``postgresSQL `` database.
+
+##### In buy/sell 
+when the user create ``buy/sell`` order if the user has the total money ( total * upper bound) that he wrote in the upper bound the the system will freeze this amount and add this order to pending orders table and check in every message i receive if i there are any match with any of the pending orders i complete the transactions and remove the order from pending orders. The order could be done in multiable transactions E.g:
+
+> if I created buy order with ``` upper_bound:20,total:100 ``` and the
+> current stock price is ```price:20, avalablity:50 ```  the user will
+> get the 50 stock and when it match again with the price in another
+> message the user will take the rest of the total
+
+also i have ``Userstocks``  and ``userTransactions`` table, userStocks unique within user_id and stock_id to save only the total of each stock. In the userTransactions i save all the transactions with the price of each buy/sell transaction so i can track all the prices.
+
+To handle any ``race condition`` or any ``duplicate  ``  I created atomic transaction with locking in the insertions of the order so I can make sure there are no duplicates 
+
+
+
+
+
