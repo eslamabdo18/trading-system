@@ -2,46 +2,94 @@
 
 Trading System APIs using Python (Django)
 
-
 ## 🧑🏽‍💻 Technologies used
 
 Project created with :
 
-1. **Django:**  I used ruby to create the main core management functionality.
-2. **PostgresSQL:**  The main database 
-3. **Phao:**  client to handle the mqtt topic from python
+1. **Django:** I used ruby to create the main core management functionality.
+2. **PostgresSQL:** The main database
+3. **Phao:** client to handle the mqtt topic from python
 4. All the testing tools like `Coverage` `FactoryBot` `Faker`
 
 ## ⚡️ Quick start
+
 > Make sure that `docker` and `docker-compose` are installed with `docker` running.
 
     git clone https://github.com/eslamabdo18/trading-system
     cd trading-system
     docker-compose up -d --build
 
->  This may take sometime to run the project
+> This may take sometime to run the project
 
 and to run the test cases
 
     docker exec -it trading-system_app_1 coverage run manage.py test -v 2
 
-if you want to access the admin page to see all the database models ,first you have to create superuser account. After creating the superuser account please click [here](http://localhost:8000/admin)  
+if you want to access the admin page to see all the database models ,first you have to create superuser account. After creating the superuser account please click [here](http://localhost:8000/admin)
+
 ```
 docker exec -it trading-system_app_1 python manage.py createsuperuser
 ```
 
->  the docker should be running so you can open the admin page
+> the docker should be running so you can open the admin page
+
 ## ✍🏼 Project Structure
-In this project i created three separates apps one for all the user operations (get user, sell,  buy, deposit) and the second for all the stocks operations and the last one is only a order engine matcher to handle the match mechanism of buy or sell 
 
-##  👀 APIs Routes 
+In this project i created three separates apps one for all the user operations (get user, sell, buy, deposit) and the second for all the stocks operations and the last one is only a order engine matcher to handle the match mechanism of buy or sell
 
-You can also find the postman collection from [here](https://documenter.getpostman.com/view/12162243/2s8YYEPQvR) 
+```
+Dockerfile
+Pipfile
+Pipfile.lock
+config
+   |-- __init__.py
+   |-- asgi.py
+   |-- mqtt_client.py
+   |-- settings.py
+   |-- urls.py
+   |-- wsgi.py
+docker-compose.yml
+manage.py
+readme.md
+stocks
+   |-- __init__.py
+   |-- admin.py
+   |-- apps.py
+   |-- migrations
+   |-- models.py
+   |-- mqtt.py
+   |-- serializers.py
+   |-- services.py
+   |-- tests.py
+   |-- urls.py
+   |-- views.py
+trade
+   |-- order_matcher.py
+   |-- trade_service.py
+users
+   |-- __init__.py
+   |-- admin.py
+   |-- apps.py
+   |-- migrations
+   |-- models.py
+   |-- serializers.py
+   |-- tests
+   |   |-- __init__.py
+   |   |-- test_models.py
+   |   |-- test_views.py
+   |-- urls.py
+   |-- views.py
+```
+
+## 👀 APIs Routes
+
+You can also find the postman collection from [here](https://documenter.getpostman.com/view/12162243/2s8YYEPQvR)
+
 ```
 Method  URI Pattern
 ----  -----------
 GET   api/users/
-POST  api/users/ 
+POST  api/users/
 GET   api/users/<user_id>
 POST  api/users/<user_id>/deposit
 POST  api/users/<user_id>/withdraw
@@ -55,7 +103,6 @@ GET   api/stocks/<stock_id>
 
 **Get user**
 
-
 ```
 # using cURL
 curl -X GET http://localhost:8000/api/users/1/
@@ -64,7 +111,8 @@ curl -X GET http://localhost:8000/api/users/1/
 http GET :8000/api/users/1/
 ```
 
->   output:
+> output:
+
 ```
 {
     "username": "eslam",
@@ -136,6 +184,7 @@ curl -X GET http://localhost:8080/api/stocks/c5165fef-bb13-4913-b92a-0eef45b3d53
 # using httpPie
 http GET :8080/api/stocks/c5165fef-bb13-4913-b92a-0eef45b3d53e/
 ```
+
 > output:
 
 ```
@@ -204,21 +253,9 @@ http GET :8080/api/stocks/c5165fef-bb13-4913-b92a-0eef45b3d53e/
     ]
 }
 ```
+
 we could also get stock data within a datetime range and in this case we specify the url as the example below
 
     http://localhost:8000/api/stocks/c5165fef-bb13-4913-b92a-0eef45b3d53e?from_date=2022-12-05 00:00:00&to_date=2022-12-06 00:00:00
 
-> we could filter by any range of dates or by any time in a specific date if i want to get the data in hour  from_date will be 2022-12-05 04:00:00 and to_date will be 2022-12-05 05:00:00. if you want to get data between 2 dates without time you have also to specify the time frame to 00:00:00 as mentioned in the url above 
-
- 
-
-
-
-
-
-
-
-
-
-
-
+> we could filter by any range of dates or by any time in a specific date if i want to get the data in hour from_date will be 2022-12-05 04:00:00 and to_date will be 2022-12-05 05:00:00. if you want to get data between 2 dates without time you have also to specify the time frame to 00:00:00 as mentioned in the url above
