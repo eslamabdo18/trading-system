@@ -2,13 +2,7 @@
 
 from rest_framework import serializers
 from .models import Stock, StockStream, UserStock
-
-
-# class LimitedListSerializer(serializers.ListSerializer):
-
-#     def to_representation(self, data):
-#         data = data.all()[:100]
-#         return super(FilteredListSerializer, self).to_representation(data)
+from users.serializers import UserTransaction
 
 
 class StockStreamSerializer(serializers.HyperlinkedModelSerializer):
@@ -38,20 +32,45 @@ class StockSerializer(serializers.ModelSerializer):
         return obj.get_avg_price()['price__avg']
 
 
+class StockTransactionSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField()
+    user = serializers.StringRelatedField()
+    stock_price = serializers.SerializerMethodField()
+
+    def get_type(self, obj):
+        types = {1: "Buy", 2: "Sell"}
+        return types[obj.type]
+
+    def get_stock_price(self, obj):
+        return obj.get_stock_price()
+
+    class Meta:
+        model = UserTransaction
+        fields = ['user', 'type', "stock_price",
+                  "total_price", "total_count"]
+
+
 class StockRetriveSerializer(serializers.ModelSerializer):
     highest_price = serializers.SerializerMethodField()
     lowest_price = serializers.SerializerMethodField()
     average_price = serializers.SerializerMethodField()
-    # last_prices = StockStreamSerializer(many=True, source="less_stream")
-    last_prices = serializers.SerializerMethodField()
+    recent_data = serializers.SerializerMethodField()
+    transactions = serializers.SerializerMethodField()
 
     class Meta:
         model = Stock
         fields = ['stock_id', 'name', 'highest_price',
-                  'lowest_price', 'average_price', 'last_prices']
+                  'lowest_price', 'average_price', 'recent_data', 'transactions']
 
-    def get_last_prices(self, obj):
-        return StockStreamSerializer(obj.less_stream(timestamp__range=self.context.get('filter')), many=True).data
+    def get_recent_data(self, obj):
+        if len(self.context.get('filter')) == 2:
+            return StockStreamSerializer(obj.less_stream(timestamp__range=self.context.get('filter')), many=True).data
+        return StockStreamSerializer(obj.less_stream(), many=True).data
+
+    def get_transactions(self, obj):
+        if len(self.context.get('filter')) == 2:
+            return StockTransactionSerializer(obj.less_stock_transtions(created_at__range=self.context.get('filter')), many=True).data
+        return StockTransactionSerializer(obj.less_stock_transtions(), many=True).data
 
     def get_highest_price(self, obj):
         print(self.context.get('filter'))
@@ -73,7 +92,19 @@ class StockRetriveSerializer(serializers.ModelSerializer):
         return obj.get_avg_price()['price__avg']
 
 
+class StockUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Stock
+        fields = ['stock_id', 'name']
+
+
 class UserStockSerializer(serializers.ModelSerializer):
+    name = serializers.StringRelatedField(source="stock")
+    stock_id = serializers.SerializerMethodField()
+
+    def get_stock_id(self, obj):
+        return obj.stock.stock_id
+
     class Meta:
         model = UserStock
-        fields = ['stock', 'total_count',]
+        fields = ['stock_id', 'name', 'total_count']

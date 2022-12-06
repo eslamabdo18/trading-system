@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, UserTransaction
 from stocks.serializers import UserStockSerializer
 
 
@@ -10,9 +10,34 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', "balance", "password"]
 
 
+class UserTransactionSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField()
+    stock = serializers.SerializerMethodField()
+    stock_price = serializers.SerializerMethodField()
+
+    def get_type(self, obj):
+        types = {1: "Buy", 2: "Sell"}
+        return types[obj.type]
+
+    def get_stock(self, obj):
+        return obj.stock.name
+
+    def get_stock_price(self, obj):
+        return obj.get_stock_price()
+
+    class Meta:
+        model = UserTransaction
+        fields = ['stock', 'type', "stock_price", "total_price", "total_count"]
+
+
 class UserRertiveSerializer(serializers.ModelSerializer):
     stocks = UserStockSerializer(many=True)
+    recent_transactions = serializers.SerializerMethodField()
+
+    def get_recent_transactions(self, obj):
+        return UserTransactionSerializer(obj.transactions, many=True).data[:5]
 
     class Meta:
         model = User
-        fields = ['username', 'email', "balance", "stocks",]
+        fields = ['username', 'email', "balance",
+                  "stocks", 'recent_transactions']

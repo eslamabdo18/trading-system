@@ -7,10 +7,13 @@ For more information on this file, see
 https://docs.djangoproject.com/en/4.0/howto/deployment/wsgi/
 """
 
+from stocks.mqtt import Mqttclient
 import os
 
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+
+Mqttclient().run()
 
 application = get_wsgi_application()

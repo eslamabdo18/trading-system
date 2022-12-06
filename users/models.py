@@ -32,3 +32,6 @@ class UserTransaction(TimeStampMixin):
     total_price = models.FloatField()
 
     total_count = models.IntegerField()
+
+    def get_stock_price(self):
+        return self.total_price/self.total_count
