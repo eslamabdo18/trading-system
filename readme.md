@@ -19,6 +19,7 @@ Project created with :
     git clone https://github.com/eslamabdo18/trading-system
     cd trading-system
     docker-compose up -d --build
+    docker exec -it trading-system_app_1 python manage.py migrate
 
 > This may take sometime to run the project
 
