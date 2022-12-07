@@ -1,6 +1,7 @@
 ﻿# Trading System
 
 Trading System APIs using Python (Django)
+
 1.  [APIs Documentation](https://documenter.getpostman.com/view/12162243/2s8YzP35YL)
 
 ## 🧑🏽‍💻 Technologies used
@@ -22,6 +23,7 @@ Project created with :
     docker exec -it trading-system_app_1 python manage.py migrate
 
 > This may take sometime to run the project
+> if the streamer did not work due to migrations please down the docker and run it again it will work
 
 and to run the test cases
 
@@ -264,26 +266,23 @@ we could also get stock data within a datetime range and in this case we specify
 
 you could find the others APIs in the postman collection
 
+## 🗒 Appendix
 
-## 🗒  Appendix
-In this project I used django (python) to consume ``VerneMQ`` topic, I used ``Phao`` client to connect to this topic and consume it. Each message I receive from the topic I insert it to ``postgresSQL `` database.
+In this project I used django (python) to consume `VerneMQ` topic, I used `Phao` client to connect to this topic and consume it. Each message I receive from the topic I insert it to `postgresSQL ` database.
 
 ##### In MQTT Client
-I used phao client to consume the topic and in the client i opend non-blocking connection so i can run it in my project without blocking the others requests, I tried to run the client in differnt places ( when init the project, configure the apps inside the project) but it seems like its not the best place so i added it in the wsgi files and its working perfectly. 
 
-##### In buy/sell 
-when the user create ``buy/sell`` order if the user has the total money ( total * upper bound) that he wrote in the upper bound the the system will freeze this amount and add this order to pending orders table and check in every message i receive if i there are any match with any of the pending orders i complete the transactions and remove the order from pending orders. The order could be done in multiable transactions E.g:
+I used phao client to consume the topic and in the client i opend non-blocking connection so i can run it in my project without blocking the others requests, I tried to run the client in differnt places ( when init the project, configure the apps inside the project) but it seems like its not the best place so i added it in the wsgi files and its working perfectly.
 
-> if I created buy order with ``` upper_bound:20,total:100 ``` and the
-> current stock price is ```price:20, avalablity:50 ```  the user will
+##### In buy/sell
+
+when the user create `buy/sell` order if the user has the total money ( total \* upper bound) that he wrote in the upper bound the the system will freeze this amount and add this order to pending orders table and check in every message i receive if i there are any match with any of the pending orders i complete the transactions and remove the order from pending orders. The order could be done in multiable transactions E.g:
+
+> if I created buy order with `upper_bound:20,total:100` and the
+> current stock price is `price:20, avalablity:50 ` the user will
 > get the 50 stock and when it match again with the price in another
 > message the user will take the rest of the total
 
-also i have ``Userstocks``  and ``userTransactions`` table, userStocks unique within user_id and stock_id to save only the total of each stock. In the userTransactions i save all the transactions with the price of each buy/sell transaction so i can track all the prices.
+also i have `Userstocks` and `userTransactions` table, userStocks unique within user_id and stock_id to save only the total of each stock. In the userTransactions i save all the transactions with the price of each buy/sell transaction so i can track all the prices.
 
-To handle any ``race condition`` or any ``duplicate  ``  I created atomic transaction with locking in the insertions of the order so I can make sure there are no duplicates 
-
-
-
-
-
+To handle any `race condition` or any `duplicate  ` I created atomic transaction with locking in the insertions of the order so I can make sure there are no duplicates
