@@ -7,7 +7,7 @@ Trading System APIs using Python (Django)
 
 Project created with :
 
-1. **Django:** I used ruby to create the main core management functionality.
+1. **Django:** I used Django framework.
 2. **PostgresSQL:** The main database
 3. **Phao:** client to handle the mqtt topic from python
 4. All the testing tools like `Coverage` `FactoryBot` `Faker`
