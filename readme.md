@@ -268,6 +268,9 @@ you could find the others APIs in the postman collection
 ## 🗒  Appendix
 In this project I used django (python) to consume ``VerneMQ`` topic, I used ``Phao`` client to connect to this topic and consume it. Each message I receive from the topic I insert it to ``postgresSQL `` database.
 
+##### In MQTT Client
+I used phao client to consume the topic and in the client i opend non-blocking connection so i can run it in my project without blocking the others requests, I tried to run the client in differnt places ( when init the project, configure the apps inside the project) but it seems like its not the best place so i added it in the wsgi files and its working perfectly. 
+
 ##### In buy/sell 
 when the user create ``buy/sell`` order if the user has the total money ( total * upper bound) that he wrote in the upper bound the the system will freeze this amount and add this order to pending orders table and check in every message i receive if i there are any match with any of the pending orders i complete the transactions and remove the order from pending orders. The order could be done in multiable transactions E.g:
 
